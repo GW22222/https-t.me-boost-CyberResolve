@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberResolve - Segurança Digital e Recuperação de Contas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff9d;
+            --secondary: #00b8ff;
+            --accent: #b967ff;
+            --dark: #0a0a0a;
+            --darker: #000000;
+            --light: #ffffff;
+            --gray: #a0a0a0;
+            --terminal: #00ff41;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 184, 255, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 157, 0.03) 0%, transparent 20%);
+            background-size: 600px 600px;
+        }
+        
+        .matrix-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 255, 65, 0.05) 0px,
+                    rgba(0, 255, 65, 0.05) 1px,
+                    transparent 1px,
+                    transparent 20px
+                );
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .binary-code {
+            position: absolute;
+            color: rgba(0, 255, 65, 0.1);
+            font-family: monospace;
+            font-size: 14px;
+            user-select: none;
+            animation: scrollBinary 20s linear infinite;
+        }
+        
+        @keyframes scrollBinary {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Top Bar com contador */
+        .top-bar {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0, 255, 157, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 184, 255, 0.1);
+        }
+        
+        .counter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .counter {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .counter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 157, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .counter i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .counter-number {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            padding: 20px 0;
+            background: transparent;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+        
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 184, 255, 0.3);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.9));
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(0, 184, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(0, 255, 157, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .hero-text {
+            flex: 1;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-image {
+            flex: 1;
+            position: relative;
+            animation: fadeInRight 1s ease;
+        }
+        
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--gray);
+            max-width: 600px;
+        }
+        
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--darker);
+            padding: 15px 35px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 184, 255, 0.4);
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 184, 255, 0.6);
+        }
+        
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+        
+        .hero-image-container {
+            position: relative;
+            perspective: 1000px;
+        }
+        
+        .cyber-terminal {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            background: rgba(15, 15, 15, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transform: rotateY(-5deg) rotateX(5deg);
+            transform-style: preserve-3d;
+            font-family: 'Courier New', monospace;
+            color: var(--terminal);
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.7);
+        }
+        
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .terminal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--terminal);
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .close { background: #ff5f57; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #28c940; }
+        
+        .terminal-content {
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+        
+        .terminal-prompt {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+        
+        .terminal-command {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .terminal-output {
+            margin-top: 15px;
+            color: var(--light);
+        }
+        
+        .security-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+            z-index: 3;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Serviços */
+        .services {
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 184, 255, 0.05) 0%, transparent 30%);
+            z-index: -1;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--light);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .service-card {
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(0, 184, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 184, 255, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .service-card:hover::before {
+            opacity: 1;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+            border-color: var(--primary);
+        }
+        
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2.2rem;
+            color: var(--primary);
+            border: 1px solid rgba(0, 184, 255, 0.3);
+            position: relative;
+        }
+        
+        .service-icon::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .service-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--light);
+        }
+        
+        .service-card p {
+            color: var(--gray);
+            margin-bottom: 25px;
+        }
+        
+        /* Processo */
+        .process {
+            padding: 100px 0;
+            background: rgba(10, 10, 10, 0.9);
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(0, 184, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 184, 255, 0.1);
+        }
+        
+        .process::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 157, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 60px;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+            padding: 30px;
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 184, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .step:hover::before {
+            opacity: 1;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 auto 25px;
+            color: var(--darker);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--light);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .step p {
+            color: var(--gray);
+        }
+        
+        /* Depoimentos */
+        .testimonials {
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 60px;
+        }
+        
+        .testimonial-card {
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 8px;
+            padding: 30px;
+            position: relative;
+            border: 1px solid rgba(0, 184, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+            border-color: var(--primary);
+        }
+        
+        .testimonial-card:before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 5rem;
+            color: rgba(0, 184, 255, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .client-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--darker);
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+        
+        .client-info h4 {
+            font-size: 1.2rem;
+            color: var(--light);
+        }
+        
+        .client-info p {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .testimonial-content {
+            color: var(--gray);
+            font-style: italic;
+            line-height: 1.8;
+        }
+        
+        .stars {
+            color: var(--accent);
+            margin-top: 15px;
+        }
+        
+        /* FAQ */
+        .faq {
+            padding: 100px 0;
+            background: rgba(10, 10, 10, 0.9);
+            position: relative;
+            border-top: 1px solid rgba(0, 184, 255, 0.1);
+        }
+        
+        .faq::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 70%, rgba(0, 184, 255, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(0, 184, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .faq-question {
+            padding: 20px 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--light);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .faq-question:after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            color: var(--primary);
+        }
+        
+        .faq-item.active .faq-question:after {
+            transform: rotate(45deg);
+        }
+        
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: var(--gray);
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 25px 25px;
+            max-height: 500px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 40px;
+            background: rgba(5, 5, 5, 0.95);
+            position: relative;
+            border-top: 1px solid rgba(0, 184, 255, 0.1);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .footer-column h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--gray);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 184, 255, 0.1);
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+            color: var(--darker);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Botões flutuantes */
+        .float-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .float-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .float-button:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .float-button:hover:after {
+            opacity: 1;
+        }
+        
+        .float-button:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+        
+        .whatsapp-button {
+            background: #25d366;
+            animation: pulse-green 2s infinite;
+        }
+        
+        .telegram-button {
+            background: #0088cc;
+            animation: pulse-blue 2s infinite;
+        }
+        
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(0, 255, 157, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 157, 0);
+            }
+        }
+        
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+        
+        @keyframes pulse-blue {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 136, 204, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(0, 136, 204, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 136, 204, 0);
+            }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-text, .hero-image {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero p {
+                margin: 0 auto 30px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .services, .process, .testimonials, .faq {
+                padding: 70px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .counter-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .counter {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .cta-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background com efeito de terminal -->
+    <div class="matrix-background" id="matrixBackground"></div>
+    
+    <!-- Top Bar com Contador -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="counter-container">
+                <div class="counter">
+                    <i class="fas fa-user-check"></i>
+                    <span class="counter-number">1527</span>
+                    <span>Clientes Satisfeitos</span>
+                </div>
+                <div class="counter">
+                    <i class="fas fa-lock"></i>
+                    <span class="counter-number">98%</span>
+                    <span>Taxa de Sucesso</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="logo-text">CyberResolve</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#services">Serviços</a></li>
+                        <li><a href="#process">Processo</a></li>
+                        <li><a href="#testimonials">Depoimentos</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Contato</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>RECUPERAÇÃO DE CONTAS E SEGURANÇA DIGITAL</h1>
+                    <p>Contas hackeadas, esquecidas ou problemas com perfis falsos? Nossa equipe especializada atua com <span class="highlight">recuperação de contas</span> e investigações digitais para resolver seus problemas com <span class="highlight">eficiência e discrição</span>.</p>
+                    <a href="#contact" class="cta-button">
+                        <i class="fab fa-whatsapp"></i> FALE CONOSCO AGORA
+                    </a>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-image-container">
+                        <div class="cyber-terminal">
+                            <div class="terminal-header">
+                                <div class="terminal-title">CYBER-RESOLVE TERMINAL</div>
+                                <div class="terminal-controls">
+                                    <div class="control-btn close"></div>
+                                    <div class="control-btn minimize"></div>
+                                    <div class="control-btn maximize"></div>
+                                </div>
+                            </div>
+                            <div class="terminal-content">
+                                <div>> <span class="terminal-prompt">root@cyber-resolve:~$</span> <span class="terminal-command">service start security.protocol</span></div>
+                                <div class="terminal-output">> Sistema de segurança inicializado</div>
+                                <div>> <span class="terminal-prompt">root@cyber-resolve:~$</span> <span class="terminal-command">scan accounts.vulnerable</span></div>
+                                <div class="terminal-output">> 1527 contas recuperadas com sucesso</div>
+                                <div>> <span class="terminal-prompt">root@cyber-resolve:~$</span> <span class="terminal-command">run recovery.protocol</span></div>
+                                <div class="terminal-output">> Protocolo de recuperação ativo - Taxa de sucesso: 98%</div>
+                            </div>
+                        </div>
+                        <div class="security-badge">
+                            <i class="fas fa-shield-alt"></i> SISTEMA 100% SEGURO
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serviços -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">NOSSOS SERVIÇOS</h2>
+            <p class="section-subtitle">Soluções especializadas para recuperação e proteção de contas em todas as principais redes sociais.</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <h3>Recuperação de Contas</h3>
+                    <p>Recuperamos contas hackeadas ou esquecidas do Facebook, Instagram, Twitter, WhatsApp, YouTube e outras redes sociais.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Investigação de Bullying</h3>
+                    <p>Investigamos casos de cyberbullying, identificamos os responsáveis e tomamos as medidas necessárias.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <h3>Desativação de Fakes</h3>
+                    <p>Removemos contas falsas que estão utilizando sua identidade, fotos ou informações pessoais.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Proteção Digital</h3>
+                    <p>Implementamos medidas de segurança para proteger suas contas contra futuros ataques e invasões.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3>Investigações Online</h3>
+                    <p>Realizamos investigações detalhadas para identificar perfis falsos, fraudes digitais e ameaças.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Suporte 24/7</h3>
+                    <p>Nossa equipe está disponível a qualquer momento para atender emergências digitais.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processo -->
+    <section id="process" class="process">
+        <div class="container">
+            <h2 class="section-title">COMO FUNCIONA</h2>
+            <p class="section-subtitle">Um processo simples, rápido e seguro para resolver seus problemas digitais.</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Contato</h3>
+                    <p>Entre em contato conosco pelo WhatsApp ou Telegram para relatar seu problema.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Análise</h3>
+                    <p>Nossa equipe analisa seu caso e define a melhor estratégia para solução.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Ação</h3>
+                    <p>Implementamos as soluções necessárias com tecnologia e expertise.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Resolução</h3>
+                    <p>Seu problema é resolvido e você recupera o controle de suas contas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Depoimentos -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">DEPOIMENTOS</h2>
+            <p class="section-subtitle">O que nossos clientes dizem sobre nossos serviços.</p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="client-avatar">M</div>
+                        <div class="client-info">
+                            <h4>Marcos A.</h4>
+                            <p>Recuperação de Instagram</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        "Minha conta do Instagram foi hackeada e pensei que nunca mais a recuperaria. A equipe do CyberResolve resolveu em menos de 24 horas! Profissionais incríveis!"
+                    </div>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="client-avatar">A</div>
+                        <div class="client-info">
+                            <h4>Ana L.</h4>
+                            <p>Desativação de Fake</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        "Descobri um perfil fake usando minhas fotos. Em menos de 48 horas, a CyberResolve conseguiu remover a conta falsa. Serviço rápido e eficiente!"
+                    </div>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="client-avatar">C</div>
+                        <div class="client-info">
+                            <h4>Carlos R.</h4>
+                            <p>Recuperação de WhatsApp</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        "Perdi acesso ao meu WhatsApp e não conseguia recuperar sozinho. O suporte foi atencioso e resolveram meu problema rapidamente. Recomendo demais!"
+                    </div>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">PERGUNTAS FREQUENTES</h2>
+            <p class="section-subtitle">Tire suas dúvidas sobre nossos serviços.</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">Quanto tempo leva para recuperar uma conta?</div>
+                    <div class="faq-answer">
+                        O tempo varia conforme a complexidade do caso, mas a maioria das recuperações é realizada em 24 a 48 horas. Casos mais complexos podem levar até 72 horas.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">É seguro fornecer minhas informações?</div>
+                    <div class="faq-answer">
+                        Sim, utilizamos protocolos de segurança avançados e todas as informações são tratadas com total confidencialidade. Nunca compartilhamos dados com terceiros.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Vocês garantem a recuperação da conta?</div>
+                    <div class="faq-answer">
+                        Garantimos uma taxa de sucesso de 98%. Caso não seja possível recuperar sua conta, oferecemos reembolso total ou alternativas para resolver seu problema.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Como posso pagar pelos serviços?</div>
+                    <div class="faq-answer">
+                        Aceitamos diversas formas de pagamento: PIX, cartão de crédito, boleto bancário e criptomoedas. O pagamento só é realizado após a confirmação do serviço.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Vocês trabalham 24 horas?</div>
+                    <div class="faq-answer">
+                        Sim, nossa equipe está disponível 24 horas por dia, 7 dias por semana, incluindo finais de semana e feriados para atender emergências.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>CyberResolve</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Soluções digitais especializadas em recuperação de contas e segurança online.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-keybase"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Serviços</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Recuperação de Contas</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Investigação de Bullying</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Desativação de Fakes</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Proteção Digital</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Investigação Online</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contato</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>contato@cyberresolve.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>+55 (11) 99999-9999</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-telegram"></i>
+                            <span>@cyberresolve</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>São Paulo, Brasil</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 CyberResolve. Todos os direitos reservados. Soluções digitais seguras e confiáveis.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botões flutuantes -->
+    <div class="float-buttons">
+        <a href="https://wa.me/559191656914" class="float-button whatsapp-button" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://t.me/CyberResolve" class="float-button telegram-button" target="_blank">
+            <i class="fab fa-telegram-plane"></i>
+        </a>
+    </div>
+
+    <script>
+        // Criar efeito de código binário
+        function createBinaryBackground() {
+            const binaryBackground = document.getElementById('matrixBackground');
+            const binaryChars = '01';
+            const columns = Math.floor(window.innerWidth / 20);
+            const rows = Math.floor(window.innerHeight / 20);
+            
+            for (let i = 0; i < 100; i++) {
+                const binaryElement = document.createElement('div');
+                binaryElement.classList.add('binary-code');
+                
+                // Criar uma sequência de caracteres binários
+                let binaryString = '';
+                for (let j = 0; j < 100; j++) {
+                    binaryString += binaryChars.charAt(Math.floor(Math.random() * binaryChars.length));
+                }
+                
+                binaryElement.textContent = binaryString;
+                
+                binaryElement.style.left = `${Math.random() * 100}%`;
+                binaryElement.style.animationDuration = `${10 + Math.random() * 20}s`;
+                binaryElement.style.animationDelay = `-${Math.random() * 20}s`;
+                binaryElement.style.opacity = 0.05 + Math.random() * 0.1;
+                
+                binaryBackground.appendChild(binaryElement);
+            }
+        }
+        
+        // Atualizar contador automaticamente
+        function initCounter() {
+            const counterElements = document.querySelectorAll('.counter-number');
+            let counterValue = 1527;
+            let successRate = 98;
+            
+            // Atualizar contador a cada 10 segundos
+            setInterval(() => {
+                counterValue += 3;
+                counterElements[0].textContent = counterValue;
+                
+                // Oscilar ligeiramente a taxa de sucesso
+                successRate = 98 + Math.sin(Date.now() / 10000) * 0.5;
+                counterElements[1].textContent = `${successRate.toFixed(1)}%`;
+            }, 10000);
+        }
+        
+        // FAQ Accordion
+        function initFAQ() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Fechar todos os itens
+                    faqItems.forEach(faqItem => {
+                        faqItem.classList.remove('active');
+                    });
+                    
+                    // Abrir o item clicado se não estava ativo
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        }
+        
+        // Animação ao rolar a página
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Aplicar aos elementos que devem aparecer ao rolar
+            document.querySelectorAll('.service-card, .step, .testimonial-card, .faq-item').forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+        }
+        
+        // Inicializar tudo quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            createBinaryBackground();
+            initCounter();
+            initFAQ();
+            initScrollAnimations();
+        });
+    </script>
+</body>
+</html>
